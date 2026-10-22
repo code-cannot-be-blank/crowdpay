@@ -1,0 +1,36 @@
+{
+  "name": "Validate issue 1107",
+  "on": {
+    "push": {
+      "branches": [
+        "validate/1107"
+      ]
+    }
+  },
+  "permissions": {
+    "contents": "read"
+  },
+  "jobs": {
+    "regressions": {
+      "runs-on": "ubuntu-latest",
+      "timeout-minutes": 6,
+      "steps": [
+        {
+          "uses": "actions/checkout@v4"
+        },
+        {
+          "uses": "actions/setup-node@v4",
+          "with": {
+            "node-version": "20"
+          }
+        },
+        {
+          "run": "node --test backend/src/services/payoutBeneficiaries.test.js"
+        },
+        {
+          "run": "node --check backend/scripts/payout-beneficiaries.js"
+        }
+      ]
+    }
+  }
+}
