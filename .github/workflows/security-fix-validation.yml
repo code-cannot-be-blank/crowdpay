@@ -1,0 +1,22 @@
+name: Verify constant-time security fix
+on:
+  push:
+    branches: [validate/1124]
+permissions:
+  contents: read
+jobs:
+  security-regressions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci --ignore-scripts
+        working-directory: backend
+      - run: node --test src/utils/constantTime.test.js src/services/apiKeyService.test.js src/services/webhookService.test.js src/services/kycProvider.test.js
+        working-directory: backend
+        env:
+          NODE_ENV: test
+      - run: npx eslint src/utils/constantTime.js src/utils/constantTime.test.js src/services/apiKeyService.js src/services/apiKeyService.test.js src/services/webhookService.js src/services/webhookService.test.js src/services/kycProvider.js
+        working-directory: backend
